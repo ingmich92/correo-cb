@@ -5,13 +5,18 @@ from email.mime.base import MIMEBase
 from email import encoders
 import smtplib
 
+empresa = "MAQUINARIA Y EQUIPOS DE TERRACERIA SA DE CV"
+nombre = "Benjamin Enrique Perez Sandi Martinez"
+contrato = 'C12137CC6358'
+dia_pago = "28/02/2023"
+monto = "55,985.43"
 
 # Iniciamos los parámetros del script
 remitente = 'cjuarez@creze.com'
 destinatarios = ['cjuarez@creze.com']
-# destinatarios = ['bprum@creze.com','stabares@creze.com','jahedo@creze.com','sgazca@creze.com','ecervantes@creze.com','caguilar@creze.com','apedroza@creze.com','celine@creze.com','jmartinez@creze.com','cjuarez@creze.com','asantiago@creze.com','pislas@creze.com']
-asunto = f'PAGO PUNTUAL CREZE_DOMICILIACIÓN_MAQUINARIA Y EQUIPOS DE TERRACERIA SA DE CV'
-cuerpo = f'Buena tarde. \n\nEstimado Benjamin Enrique Perez Sandi Martinez esperamos se encuentre muy bien, le recordamos que su crédito Creze con contrato C12137CC6358 a nombre de MAQUINARIA Y EQUIPOS DE TERRACERIA SA DE CV , tiene programado su pago puntual el día 28/02/2023 por un monto de $55,985.43; es importante mantener el saldo en la cuenta para que podamos realizar la domiciliación correspondiente; con esto evitar intereses moratorios y mala calificación ante buró de crédito \n\n ¡Agradecemos el compromiso con su crédito! \n\nEn caso de preferir aplicar su pago por transferencia, recuerda que también contamos con esta forma de pago, compartimos los datos bancarios: \n\nNúmero de Cuenta: 0114736958 \nBanco: BBVA BANCOMER S.A. IBM \nBeneficiario: BANCO ACTINVER SA POR CT DEL FID 4353 \nCLABE: 012180001147369582 \nRFC: PSC091014U80 \nConcepto: C12137CC6358 \nPago: $55,985.43 \nArea de Cobranza' 
+asunto = f'PAGO PUNTUAL CREZE_DOMICILIACIÓN_'+'{}'.format(empresa)
+
+cuerpo = f'Buena tarde. \n\n''Estimado '+'{}'.format(nombre)+' esperamos se encuentre muy bien, le recordamos que su crédito Creze con contrato '+'{}'.format(contrato)+' a nombre de '+'{}'.format(empresa)+', tiene programado su pago puntual el día '+'{}'.format(dia_pago)+' por un monto de $'+'{}'.format(monto)+'; es importante mantener el saldo en la cuenta para que podamos realizar la domiciliación correspondiente; con esto evitar intereses moratorios y mala calificación ante buró de crédito \n\n ¡Agradecemos el compromiso con su crédito! \n\nEn caso de preferir aplicar su pago por transferencia, recuerda que también contamos con esta forma de pago, compartimos los datos bancarios: \n\nNúmero de Cuenta: 0114736958 \nBanco: BBVA BANCOMER S.A. IBM \nBeneficiario: BANCO ACTINVER SA POR CT DEL FID 4353 \nCLABE: 012180001147369582 \nRFC: PSC091014U80 \n''Concepto: '+'{}'.format(contrato)+'\nPago: $55,985.43 \nQuedamos atentos a sus comentarios. Gracias' 
 
 ruta_adjunto = 'cb.jpg'
 nombre_adjunto = 'cb.jpg'
@@ -48,7 +53,7 @@ sesion_smtp = smtplib.SMTP('smtp.gmail.com', 587)
 sesion_smtp.starttls()
 
 # Iniciamos sesión en el servidor
-sesion_smtp.login() 
+sesion_smtp.login('cjuarez@creze.com','/creze/92/mich') 
 
 # Convertimos el objeto mensaje a texto
 texto = mensaje.as_string()
