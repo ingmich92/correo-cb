@@ -5,14 +5,43 @@ from email.mime.base import MIMEBase
 from email import encoders
 import smtplib
 
-empresa = "MAQUINARIA Y EQUIPOS DE TERRACERIA SA DE CV"
-nombre = "Benjamin Enrique Perez Sandi Martinez"
-contrato = 'C12137CC6358'
-dia_pago = "28/02/2023"
-monto = "55,985.43"
+import psycopg2
+import pandas as pd
+
+# Conexion a BDD
+HOST = "creze-aws-aurora-cluster.cluster-cmiufpwtxjkk.us-east-1.rds.amazonaws.com"
+PORT = "5432"
+USER = "data"
+PASS = "zW.B@/(7+Q,Yt/Kgyg#"
+DB = "creze"
+
+connstr = "host=%s port=%s user=%s password=%s dbname=%s" % (
+    HOST, PORT, USER, PASS, DB)
+conn = psycopg2.connect(connstr)
+#Realiza la consulta para traer datos
+df = pd.read_sql("select bo.folio, bo.razon_social, pa.pago_total, pa.no_pago , pa.fecha_pago, " 
+                 +"concat(nombres,' ',apellido_paterno,' ',apellido_materno) as nombre "
+                 +"from cobranza.base_originacion bo "
+                 +"inner join cobranza.pago_amortizacion pa on bo.folio = pa.folio "
+                 +"inner join cobranza.clientes c on pa.id_cliente  = c.id_cliente "
+                 +"where bo.folio in ('C12137CC6358') and pagos = 0 "
+                 +"order by pa.no_pago asc limit 1",conn)
+
+contrato = df['folio'].values[0]
+empresa = df['razon_social'].values[0]
+monto = df['pago_total'].values[0]
+nombre = df['nombre'].values[0]
+dia_pago = df['fecha_pago'].values[0]
+correo = 'cjuarez@creze.com'
+
+# empresa = "MAQUINARIA Y EQUIPOS DE TERRACERIA SA DE CV"
+# nombre = "Benjamin Enrique Perez Sandi Martinez"
+# contrato = 'C12137CC6358'
+# dia_pago = "28/02/2023"
+# monto = "55,985.43"
 
 # Iniciamos los parámetros del script
-remitente = 'cjuarez@creze.com'
+remitente = correo
 destinatarios = ['cjuarez@creze.com']
 asunto = f'PAGO PUNTUAL CREZE_DOMICILIACIÓN_'+'{}'.format(empresa)
 
@@ -53,7 +82,7 @@ sesion_smtp = smtplib.SMTP('smtp.gmail.com', 587)
 sesion_smtp.starttls()
 
 # Iniciamos sesión en el servidor
-sesion_smtp.login('cjuarez@creze.com','/creze/92/mich') 
+sesion_smtp.login() 
 
 # Convertimos el objeto mensaje a texto
 texto = mensaje.as_string()
